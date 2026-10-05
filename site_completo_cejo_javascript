@@ -1,0 +1,77 @@
+class SistemaEscolarCEJO {
+    constructor() {
+        this.alunos = [
+            {
+                matricula: "2026-CEJO-01",
+                nome: "Gabriel Souza Martins",
+                turma: "3º Ano A - Ensino Médio",
+                responsavel: "Carla Souza",
+                ativo: true
+            }
+        ];
+    }
+
+    autenticar(email, matricula) {
+        if (!email.includes("@") || !matricula) {
+            throw new Error("E-mail ou matrícula inválida.");
+        }
+        return {
+            email,
+            matricula,
+            inicial: email.charAt(0).toUpperCase()
+        };
+    }
+
+    cadastrarAluno(nome, turma, responsavel) {
+        const randomId = Math.floor(10 + Math.random() * 90);
+        const novoAluno = {
+            matricula: `2026-CEJO-${randomId}`,
+            nome,
+            turma,
+            responsavel,
+            ativo: true
+        };
+
+        this.alunos.push(novoAluno);
+        return novoAluno;
+    }
+
+    listarAlunos() {
+        return [...this.alunos];
+    }
+
+    buscarAlunos(termo) {
+        const busca = termo.toLowerCase();
+        return this.alunos.filter(aluno =>
+            aluno.nome.toLowerCase().includes(busca) ||
+            aluno.matricula.toLowerCase().includes(busca)
+        );
+    }
+
+    deletarAluno(matricula) {
+        const index = this.alunos.findIndex(aluno => aluno.matricula === matricula);
+        if (index !== -1) {
+            this.alunos.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
+}
+
+// Demonstração de uso
+const sistema = new SistemaEscolarCEJO();
+
+// Autenticação de usuário
+const usuarioLogado = sistema.autenticar("aluno@cejo.edu.go.gov.br", "2026-CEJO-01");
+console.log("Usuário logado:", usuarioLogado);
+
+// Adicionar aluno
+const novoAluno = sistema.cadastrarAluno("Maria Eduarda Silva", "1º Ano B - Ensino Médio", "João Silva");
+console.log("Novo aluno inserido:", novoAluno);
+
+// Buscar aluno por nome ou matrícula
+console.log("Busca por 'Maria':", sistema.buscarAlunos("Maria"));
+
+// Deletar aluno por matrícula
+sistema.deletarAluno("2026-CEJO-01");
+console.log("Lista atualizada:", sistema.listarAlunos());
