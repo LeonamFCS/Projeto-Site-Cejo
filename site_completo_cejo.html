@@ -3,370 +3,681 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestão Escolar - Eduque</title>
+    <title>CEJO - Colégio Estadual Jardim Oriente | Portal Escolar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Garantir centralização perfeita e sem rolagens horizontais indesejadas */
+        html, body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Estilos do Modo Escuro */
+        body.dark-mode {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+        body.dark-mode header,
+        body.dark-mode nav.landing-nav {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        body.dark-mode #page-title,
+        body.dark-mode h1, 
+        body.dark-mode h2, 
+        body.dark-mode h3, 
+        body.dark-mode h4,
+        body.dark-mode .text-slate-800 {
+            color: #f8fafc !important;
+        }
+        body.dark-mode .text-slate-600 {
+            color: #cbd5e1 !important;
+        }
+        body.dark-mode .bg-white {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        body.dark-mode .bg-slate-50,
+        body.dark-mode .bg-slate-100 {
+            background-color: #334155 !important;
+            border-color: #475569 !important;
+            color: #f8fafc !important;
+        }
+        body.dark-mode input,
+        body.dark-mode select {
+            background-color: #334155 !important;
+            color: #f8fafc !important;
+            border-color: #475569 !important;
+        }
+        body.dark-mode table thead tr {
+            background-color: #334155 !important;
+        }
+        body.dark-mode #modal-aluno > div,
+        body.dark-mode #card-login {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            border-color: #334155 !important;
+        }
+    </style>
 </head>
-<body class="bg-slate-100 font-sans text-slate-800 flex h-screen overflow-hidden">
+<body class="bg-slate-100 font-sans text-slate-800 min-h-screen w-full flex flex-col m-0 p-0 overflow-x-hidden">
 
-    <!-- Sidebar de Navegação -->
-    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between p-4 shadow-xl shrink-0">
-        <div>
-            <!-- Logo -->
-            <div class="flex items-center gap-3 px-2 py-4 border-b border-slate-800">
-                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md">
-                    <i class="fa-solid fa-graduation-cap text-xl"></i>
+    <!-- TELA 1: LANDING PAGE / APRESENTAÇÃO DA ESCOLA -->
+    <div id="screen-landing" class="w-full flex-1 flex flex-col min-h-screen items-center justify-between">
+        <!-- Navegação Superior -->
+        <nav class="landing-nav bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-20 shadow-sm flex justify-between items-center w-full">
+            <div class="max-w-7xl w-full mx-auto flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-emerald-500/20">
+                        CEJO
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base md:text-lg text-slate-800 leading-tight">Colégio Estadual Jardim Oriente</h1>
+                        <span class="text-[11px] text-slate-500 block -mt-0.5"><i class="fa-solid fa-location-dot text-emerald-600"></i> Valparaíso de Goiás - GO</span>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="font-bold text-base text-white leading-tight">Escola Eduque</h1>
-                    <span class="text-[11px] text-slate-400">Gestão Integrada</span>
+
+                <div class="flex items-center gap-3 md:gap-4">
+                    <a href="#equipe" class="hidden sm:block text-xs font-semibold text-slate-600 hover:text-emerald-600 transition">Equipe Devs</a>
+                    <!-- Botão Modo Escuro -->
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition" title="Alternar Modo Escuro/Claro">
+                        <i class="theme-icon-landing fa-solid fa-moon text-base"></i>
+                    </button>
+
+                    <button onclick="openLoginModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition shadow-md shadow-emerald-600/20 flex items-center gap-2">
+                        <i class="fa-solid fa-right-to-bracket"></i> Fazer Login
+                    </button>
                 </div>
             </div>
-            
-            <!-- Menu Principal -->
-            <nav class="mt-6 flex flex-col gap-1.5" id="sidebar-nav">
-                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn active flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <i class="fa-solid fa-chart-pie w-5 text-center"></i> Dashboard
-                </button>
-                <button onclick="switchTab('alunos')" id="btn-alunos" class="nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <i class="fa-solid fa-user-graduate w-5 text-center"></i> Alunos & Matrículas
-                </button>
-                <button onclick="switchTab('professores')" id="btn-professores" class="nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <i class="fa-solid fa-chalkboard-user w-5 text-center"></i> Corpo Docente
-                </button>
-                <button onclick="switchTab('notas')" id="btn-notas" class="nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <i class="fa-solid fa-pen-to-square w-5 text-center"></i> Notas & Frequência
-                </button>
-                <button onclick="switchTab('turmas')" id="btn-turmas" class="nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <i class="fa-solid fa-layer-group w-5 text-center"></i> Turmas & Grade
-                </button>
-                <button onclick="switchTab('financeiro')" id="btn-financeiro" class="nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <i class="fa-solid fa-wallet w-5 text-center"></i> Financeiro
-                </button>
-                <button onclick="switchTab('comunicados')" id="btn-comunicados" class="nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <i class="fa-solid fa-bullhorn w-5 text-center"></i> Mural & Avisos
-                </button>
-            </nav>
-        </div>
+        </nav>
 
-        <!-- Perfil do Usuário -->
-        <div class="border-t border-slate-800 pt-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-sm shadow">
-                    AD
+        <!-- Seção Hero / Apresentação Principal -->
+        <section class="w-full flex-1 flex items-center justify-center bg-gradient-to-b from-emerald-950 via-slate-900 to-slate-900 text-white px-6 py-16 relative overflow-hidden">
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="max-w-4xl w-full mx-auto text-center space-y-8 relative z-10">
+                <div class="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider">
+                    <i class="fa-solid fa-building-columns"></i> Rede Estadual de Ensino de Goiás
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-white">Direção Geral</p>
-                    <p class="text-[10px] text-slate-400">admin@eduque.com.br</p>
+                
+                <h2 class="text-4xl md:text-6xl font-black tracking-tight leading-tight">
+                    Educação pública transformadora no <span class="text-emerald-400">Jardim Oriente</span>
+                </h2>
+                
+                <p class="text-slate-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+                    Bem-vindo ao portal do <strong>Colégio Estadual Jardim Oriente (CEJO)</strong> em Valparaíso de Goiás. Nosso compromisso é formar cidadãos conscientes, preparados para o ENEM, vestibulares e para os desafios da vida em sociedade.
+                </p>
+
+                <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button onclick="openLoginModal()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-8 py-4 rounded-xl transition shadow-xl shadow-emerald-600/30 flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-user-graduate"></i> Acessar Portal do Aluno / Servidor
+                    </button>
+                    <a href="#diferenciais" class="w-full sm:w-auto bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-slate-700 font-semibold text-sm px-8 py-4 rounded-xl transition flex items-center justify-center gap-2">
+                        Conhecer o CEJO <i class="fa-solid fa-arrow-down"></i>
+                    </a>
                 </div>
             </div>
-            <button class="text-slate-400 hover:text-red-400 transition" title="Sair"><i class="fa-solid fa-right-from-bracket"></i></button>
-        </div>
-    </aside>
+        </section>
 
-    <!-- Conteúdo Principal -->
-    <main class="flex-1 flex flex-col overflow-y-auto">
-        <!-- Header Fixo -->
-        <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center sticky top-0 z-10 shadow-sm">
+        <!-- Seção de Destaques e Pilares -->
+        <section id="diferenciais" class="py-16 px-6 max-w-6xl w-full mx-auto space-y-12">
+            <div class="text-center space-y-2">
+                <h3 class="text-2xl font-bold text-slate-800">Compromisso com a Comunidade Escolar</h3>
+                <p class="text-xs text-slate-500">Conheça os valores e a estrutura do Colégio Estadual Jardim Oriente</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-book-open-reader"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-base">Qualidade Acadêmica</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">Foco constante no desempenho escolar, preparação para avaliações estaduais e exames nacionais com docentes qualificados.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-people-roof"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-base">Integração com Valparaíso</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">Localizado no bairro Jardim Oriente, o CEJO atua de forma aproximada com as famílias e a comunidade local.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-computer"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-base">Gestão Digital Unificada</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">Acompanhamento transparente de notas, frequências, avisos e documentos diretamente pelo Portal Escolar.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: DESENVOLVEDORES DO PROJETO -->
+        <section id="equipe" class="py-16 px-6 max-w-6xl w-full mx-auto space-y-10 border-t border-slate-200">
+            <div class="text-center space-y-2">
+                <span class="inline-block bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <i class="fa-solid fa-code"></i> Projeto Escolar
+                </span>
+                <h3 class="text-2xl md:text-3xl font-bold text-slate-800">Equipe de Desenvolvimento</h3>
+                <p class="text-xs md:text-sm text-slate-500 max-w-xl mx-auto">
+                    Conheça os alunos responsáveis pela idealização, programação, testes e documentação deste portal do CEJO.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+                <!-- Leonam (Líder) -->
+                <div class="bg-white p-5 rounded-2xl border-2 border-emerald-500 shadow-md flex flex-col items-center text-center space-y-3 relative overflow-hidden">
+                    <div class="absolute -top-2 -right-2 bg-emerald-600 text-white text-[10px] font-black uppercase px-3 py-1 rounded-bl-xl shadow-sm">
+                        Líder
+                    </div>
+                    <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold">
+                        L
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base">Leonam</h4>
+                        <p class="text-xs font-semibold text-emerald-600 mt-0.5">Líder do Projeto & Back-end</p>
+                    </div>
+                </div>
+
+                <!-- Laura -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center text-center space-y-3">
+                    <div class="w-14 h-14 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold">
+                        L
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base">Laura</h4>
+                        <p class="text-xs font-semibold text-blue-600 mt-0.5">Back-end</p>
+                    </div>
+                </div>
+
+                <!-- Davi -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center text-center space-y-3">
+                    <div class="w-14 h-14 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold">
+                        D
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base">Davi</h4>
+                        <p class="text-xs font-semibold text-amber-600 mt-0.5">Documentação & Dados</p>
+                        <span class="text-[10px] text-slate-400 block mt-1">Coleta de Informações Escolares</span>
+                    </div>
+                </div>
+
+                <!-- Vinicius Cauã -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center text-center space-y-3">
+                    <div class="w-14 h-14 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold">
+                        V
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base">Vinicius Cauã</h4>
+                        <p class="text-xs font-semibold text-blue-600 mt-0.5">Back-end</p>
+                    </div>
+                </div>
+
+                <!-- Renzo -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center text-center space-y-3">
+                    <div class="w-14 h-14 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xl font-bold">
+                        R
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base">Renzo</h4>
+                        <p class="text-xs font-semibold text-purple-600 mt-0.5">Front-end</p>
+                    </div>
+                </div>
+
+                <!-- Sarah -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center text-center space-y-3">
+                    <div class="w-14 h-14 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xl font-bold">
+                        S
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base">Sarah</h4>
+                        <p class="text-xs font-semibold text-purple-600 mt-0.5">Front-end</p>
+                    </div>
+                </div>
+
+                <!-- Vynicius Alves -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center text-center space-y-3">
+                    <div class="w-14 h-14 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl font-bold">
+                        V
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base">Vynicius Alves</h4>
+                        <p class="text-xs font-semibold text-indigo-600 mt-0.5">Beta Tester</p>
+                    </div>
+                </div>
+
+                <!-- Kauã Noleto -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center text-center space-y-3">
+                    <div class="w-14 h-14 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl font-bold">
+                        K
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base">Kauã Noleto</h4>
+                        <p class="text-xs font-semibold text-indigo-600 mt-0.5">Beta Tester</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rodapé da Landing Page -->
+        <footer class="w-full bg-slate-900 text-slate-400 text-xs py-8 px-6 border-t border-slate-800 text-center mt-auto space-y-2">
+            <div class="max-w-7xl mx-auto space-y-2">
+                <p class="font-semibold text-slate-300">Colégio Estadual Jardim Oriente (CEJO)</p>
+                <p>Valparaíso de Goiás - GO • Secretaria de Estado da Educação de Goiás</p>
+                <p class="text-slate-500 text-[11px] pt-2">© 2026 CEJO. Desenvolvido por Leonam, Laura, Davi, Vinicius Cauã, Vynicius Alves, Kauã Noleto, Renzo e Sarah.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODAL DE LOGIN -->
+    <div id="modal-login" class="fixed inset-0 w-full h-full bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div id="card-login" class="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl border border-slate-100 space-y-6 relative mx-auto">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-2"><i class="fa-solid fa-xmark text-base"></i></button>
+
+            <div class="text-center space-y-2">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-600 mx-auto flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-emerald-500/30">
+                    CEJO
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800">Portal do Aluno</h3>
+                <p class="text-xs text-slate-500">Colégio Estadual Jardim Oriente • Valparaíso de Goiás</p>
+            </div>
+
+            <form onsubmit="entrarNoSistema(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">E-mail Cadastrado</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="email" id="login-email" required placeholder="aluno@cejo.edu.go.gov.br" class="w-full bg-slate-50 border border-slate-200 text-xs rounded-xl pl-9 pr-3 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Número de Matrícula</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-id-card absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="login-matricula" required placeholder="Ex: 2026-CEJO-01" class="w-full bg-slate-50 border border-slate-200 text-xs rounded-xl pl-9 pr-3 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs py-3.5 rounded-xl transition shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2">
+                    Acessar Painel Escolar <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TELA 2: DASHBOARD INTERNO -->
+    <div id="screen-app" class="hidden w-full h-screen overflow-hidden flex-row">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between p-4 shadow-xl shrink-0">
             <div>
-                <h2 id="page-title" class="text-xl font-bold text-slate-800">Dashboard Geral</h2>
-                <p class="text-xs text-slate-400 mt-0.5">Visão geral do ano letivo de 2026</p>
+                <div class="flex items-center gap-3 px-2 py-4 border-b border-slate-800">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-lg shadow-md shrink-0">
+                        CEJO
+                    </div>
+                    <div class="truncate">
+                        <h1 class="font-bold text-sm text-white leading-tight truncate">C.E. Jardim Oriente</h1>
+                        <span class="text-[10px] text-slate-400 block truncate">Valparaíso de Goiás - GO</span>
+                    </div>
+                </div>
+                
+                <nav class="mt-6 flex flex-col gap-1.5" id="sidebar-nav">
+                    <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn active flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
+                        <i class="fa-solid fa-chart-pie w-5 text-center"></i> Dashboard
+                    </button>
+                    <button onclick="switchTab('alunos')" id="btn-alunos" class="nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
+                        <i class="fa-solid fa-user-graduate w-5 text-center"></i> Alunos & Matrículas
+                    </button>
+                    <button onclick="switchTab('professores')" id="btn-professores" class="nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
+                        <i class="fa-solid fa-chalkboard-user w-5 text-center"></i> Corpo Docente
+                    </button>
+                    <button onclick="switchTab('notas')" id="btn-notas" class="nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
+                        <i class="fa-solid fa-pen-to-square w-5 text-center"></i> Notas & Frequência
+                    </button>
+                    <button onclick="switchTab('turmas')" id="btn-turmas" class="nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
+                        <i class="fa-solid fa-layer-group w-5 text-center"></i> Turmas & Grade
+                    </button>
+                    <button onclick="switchTab('comunicados')" id="btn-comunicados" class="nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all">
+                        <i class="fa-solid fa-bullhorn w-5 text-center"></i> Mural CEJO
+                    </button>
+                </nav>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                    <input type="text" id="global-search" onkeyup="searchAlunos(this.value)" placeholder="Buscar aluno ou matrícula..." class="bg-slate-100 border border-slate-200 text-xs rounded-xl pl-8 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+
+            <div class="border-t border-slate-800 pt-4 flex items-center justify-between">
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <div id="user-sidebar-avatar" class="w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow shrink-0">
+                        CE
+                    </div>
+                    <div class="truncate">
+                        <p id="user-matricula-display" class="text-xs font-semibold text-white truncate">Matrícula</p>
+                        <p id="user-email-display" class="text-[10px] text-slate-400 truncate">aluno@cejo.edu.go.gov.br</p>
+                    </div>
                 </div>
-                <button class="relative p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition">
-                    <i class="fa-regular fa-bell text-base"></i>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                <button onclick="sairDoSistema()" class="text-slate-400 hover:text-red-400 transition" title="Sair / Voltar"><i class="fa-solid fa-right-from-bracket"></i></button>
             </div>
-        </header>
+        </aside>
 
-        <!-- Área de Módulos -->
-        <div class="p-8 space-y-6">
-            
-            <!-- Dashboard -->
-            <section id="tab-dashboard" class="tab-content block space-y-6">
-                <!-- Métricas -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total de Alunos</p>
-                            <h3 class="text-2xl font-black text-slate-800 mt-1">1,240</h3>
-                            <span class="text-[11px] text-emerald-600 font-medium"><i class="fa-solid fa-arrow-up"></i> +5.2% este ano</span>
-                        </div>
-                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Professores</p>
-                            <h3 class="text-2xl font-black text-slate-800 mt-1">68</h3>
-                            <span class="text-[11px] text-slate-400 font-medium">100% ativos</span>
-                        </div>
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-chalkboard-user"></i></div>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Turmas Ativas</p>
-                            <h3 class="text-2xl font-black text-slate-800 mt-1">32</h3>
-                            <span class="text-[11px] text-slate-400 font-medium">Manhã e Tarde</span>
-                        </div>
-                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-school"></i></div>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Adimplência</p>
-                            <h3 class="text-2xl font-black text-slate-800 mt-1">96.8%</h3>
-                            <span class="text-[11px] text-emerald-600 font-medium"><i class="fa-solid fa-check"></i> Meta atingida</span>
-                        </div>
-                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-circle-dollar-to-slot"></i></div>
-                    </div>
+        <!-- Conteúdo Principal -->
+        <main class="flex-1 flex flex-col overflow-y-auto w-full">
+            <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center sticky top-0 z-10 shadow-sm w-full">
+                <div>
+                    <h2 id="page-title" class="text-xl font-bold text-slate-800">Dashboard Geral</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Colégio Estadual Jardim Oriente • Ano Letivo 2026</p>
                 </div>
 
-                <!-- Quadro de Alertas e Ações -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-slate-800">Mural de Avisos Recentes</h3>
-                            <button onclick="switchTab('comunicados')" class="text-xs font-semibold text-indigo-600 hover:underline">Ver todos</button>
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="global-search" onkeyup="searchAlunos(this.value)" placeholder="Buscar aluno ou matrícula..." class="bg-slate-100 border border-slate-200 text-xs rounded-xl pl-8 pr-4 py-2 w-56 sm:w-64 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+                    </div>
+
+                    <button id="theme-toggle-btn" onclick="toggleDarkMode()" class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition" title="Alternar Modo Escuro/Claro">
+                        <i id="theme-icon" class="fa-solid fa-moon text-base"></i>
+                    </button>
+
+                    <button class="relative p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition">
+                        <i class="fa-regular fa-bell text-base"></i>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+
+                    <!-- PERFIL DO USUÁRIO LOGADO (CANTO SUPERIOR DIREITO) -->
+                    <div class="flex items-center gap-2.5 pl-3 border-l border-slate-200">
+                        <div id="top-user-avatar" class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+                            CE
                         </div>
-                        <div class="space-y-3">
-                            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-2 h-2 rounded-full bg-indigo-500"></div>
-                                    <div>
-                                        <p class="font-semibold text-sm text-slate-800">Reunião de Pais e Mestres</p>
-                                        <p class="text-xs text-slate-400">Sexta-feira às 18:00 — Auditório Principal</p>
+                        <div class="hidden sm:block text-left">
+                            <p id="top-user-matricula" class="text-xs font-bold text-slate-800 leading-tight">Matrícula</p>
+                            <p id="top-user-email" class="text-[10px] text-slate-400 leading-tight">aluno@cejo.edu.go.gov.br</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-6 max-w-7xl w-full mx-auto">
+                <!-- Módulo Dashboard -->
+                <section id="tab-dashboard" class="tab-content block space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Estudantes CEJO</p>
+                                <h3 class="text-2xl font-black text-slate-800 mt-1">980</h3>
+                                <span class="text-[11px] text-emerald-600 font-medium"><i class="fa-solid fa-check"></i> Matrículas Ativas</span>
+                            </div>
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Professores</p>
+                                <h3 class="text-2xl font-black text-slate-800 mt-1">45</h3>
+                                <span class="text-[11px] text-slate-400 font-medium">Quadro Docente</span>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-chalkboard-user"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Turmas</p>
+                                <h3 class="text-2xl font-black text-slate-800 mt-1">24</h3>
+                                <span class="text-[11px] text-slate-400 font-medium">Matutino e Vespertino</span>
+                            </div>
+                            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-school"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Frequência Média</p>
+                                <h3 class="text-2xl font-black text-slate-800 mt-1">94.2%</h3>
+                                <span class="text-[11px] text-emerald-600 font-medium"><i class="fa-solid fa-arrow-up"></i> Alta presença</span>
+                            </div>
+                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-clipboard-user"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-slate-800">Mural de Comunicados do CEJO</h3>
+                                <button onclick="switchTab('comunicados')" class="text-xs font-semibold text-emerald-600 hover:underline">Ver todos</button>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                        <div>
+                                            <p class="font-semibold text-sm text-slate-800">Simulado ENEM & Avaliações Estaduais</p>
+                                            <p class="text-xs text-slate-400">Aplicação no próximo sábado no CEJO — Valparaíso de Goiás</p>
+                                        </div>
                                     </div>
+                                    <span class="bg-emerald-100 text-emerald-700 text-[11px] font-semibold px-2.5 py-1 rounded-full">Geral</span>
                                 </div>
-                                <span class="bg-indigo-100 text-indigo-700 text-[11px] font-semibold px-2.5 py-1 rounded-full">Geral</span>
-                            </div>
-                            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-2 h-2 rounded-full bg-amber-500"></div>
-                                    <div>
-                                        <p class="font-semibold text-sm text-slate-800">Fechamento do 2º Trimestre</p>
-                                        <p class="text-xs text-slate-400">Prazo final de lançamento de notas pelos professores</p>
+                                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+                                        <div>
+                                            <p class="font-semibold text-sm text-slate-800">Reunião de Pais e Responsáveis</p>
+                                            <p class="text-xs text-slate-400">Pauta: Entrega do boletim do 2º Bimestre</p>
+                                        </div>
                                     </div>
+                                    <span class="bg-amber-100 text-amber-700 text-[11px] font-semibold px-2.5 py-1 rounded-full">Comunidade</span>
                                 </div>
-                                <span class="bg-amber-100 text-amber-700 text-[11px] font-semibold px-2.5 py-1 rounded-full">Docentes</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-slate-800 mb-4">Ações Rápidas</h3>
+                                <div class="space-y-2">
+                                    <button onclick="openModal()" class="w-full text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-600 p-3 rounded-xl text-xs font-semibold transition border border-slate-100 flex items-center gap-3">
+                                        <i class="fa-solid fa-user-plus text-emerald-500"></i> Cadastrar Novo Aluno
+                                    </button>
+                                    <button onclick="switchTab('notas')" class="w-full text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-600 p-3 rounded-xl text-xs font-semibold transition border border-slate-100 flex items-center gap-3">
+                                        <i class="fa-solid fa-file-signature text-blue-500"></i> Lançar Diário / Frequência
+                                    </button>
+                                    <button onclick="switchTab('turmas')" class="w-full text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-600 p-3 rounded-xl text-xs font-semibold transition border border-slate-100 flex items-center gap-3">
+                                        <i class="fa-solid fa-calendar-days text-amber-500"></i> Horários das Turmas CEJO
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </section>
 
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-bold text-slate-800 mb-4">Ações Rápidas</h3>
-                            <div class="space-y-2">
-                                <button onclick="openModal()" class="w-full text-left bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 p-3 rounded-xl text-xs font-semibold transition border border-slate-100 flex items-center gap-3">
-                                    <i class="fa-solid fa-user-plus text-indigo-500"></i> Matricular Novo Aluno
-                                </button>
-                                <button onclick="switchTab('notas')" class="w-full text-left bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 p-3 rounded-xl text-xs font-semibold transition border border-slate-100 flex items-center gap-3">
-                                    <i class="fa-solid fa-file-signature text-emerald-500"></i> Lançar Boletim / Diário
-                                </button>
-                                <button onclick="switchTab('financeiro')" class="w-full text-left bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 p-3 rounded-xl text-xs font-semibold transition border border-slate-100 flex items-center gap-3">
-                                    <i class="fa-solid fa-receipt text-amber-500"></i> Emitir Segunda Via de Mensalidade
-                                </button>
+                <!-- Módulo Alunos -->
+                <section id="tab-alunos" class="tab-content hidden">
+                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                        <div class="p-5 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div>
+                                <h3 class="font-bold text-slate-800">Alunos Cadastrados - CEJO</h3>
+                                <p class="text-xs text-slate-400">Registros de matrículas do Colégio Estadual Jardim Oriente</p>
                             </div>
+                            <button onclick="openModal()" class="bg-emerald-600 text-white text-xs px-4 py-2.5 rounded-xl font-semibold hover:bg-emerald-700 transition flex items-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-plus"></i> Novo Aluno
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-200 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                        <th class="p-4">Matrícula</th>
+                                        <th class="p-4">Aluno</th>
+                                        <th class="p-4">Turma CEJO</th>
+                                        <th class="p-4">Responsável</th>
+                                        <th class="p-4">Situação</th>
+                                        <th class="p-4 text-right">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-xs" id="aluno-table-body">
+                                    <tr class="aluno-row">
+                                        <td class="p-4 font-mono text-slate-500 font-bold">2026-CEJO-01</td>
+                                        <td class="p-4 font-semibold text-slate-800">Gabriel Souza Martins</td>
+                                        <td class="p-4 text-slate-600">3º Ano A - Ensino Médio</td>
+                                        <td class="p-4 text-slate-600">Carla Souza (Mãe)</td>
+                                        <td class="p-4"><span class="bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1 rounded-full text-[10px]">Ativo</span></td>
+                                        <td class="p-4 text-right space-x-2">
+                                            <button class="text-slate-400 hover:text-emerald-600"><i class="fa-solid fa-pen"></i></button>
+                                            <button class="text-slate-400 hover:text-red-600" onclick="deleteRow(this)"><i class="fa-solid fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- Alunos & Matrículas -->
-            <section id="tab-alunos" class="tab-content hidden">
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-                    <div class="p-5 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <div>
-                            <h3 class="font-bold text-slate-800">Alunos Cadastrados</h3>
-                            <p class="text-xs text-slate-400">Gerencie dados cadastrais e situação de matrículas</p>
-                        </div>
-                        <button onclick="openModal()" class="bg-indigo-600 text-white text-xs px-4 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-plus"></i> Novo Aluno
-                        </button>
+                <section id="tab-professores" class="tab-content hidden">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                        <h3 class="font-bold text-slate-800 mb-2">Corpo Docente - CEJO</h3>
+                        <p class="text-xs text-slate-400">Quadro de professores da Rede Estadual em Valparaíso de Goiás.</p>
                     </div>
+                </section>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                    <th class="p-4">Matrícula</th>
-                                    <th class="p-4">Aluno</th>
-                                    <th class="p-4">Turma</th>
-                                    <th class="p-4">Responsável</th>
-                                    <th class="p-4">Status</th>
-                                    <th class="p-4 text-right">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 text-xs" id="aluno-table-body">
-                                <tr class="aluno-row">
-                                    <td class="p-4 font-mono text-slate-500 font-bold">2026-0101</td>
-                                    <td class="p-4 font-semibold text-slate-800">Ana Clara Silva</td>
-                                    <td class="p-4 text-slate-600">3º Ano A - Médio</td>
-                                    <td class="p-4 text-slate-600">Roberto Silva (Pai)</td>
-                                    <td class="p-4"><span class="bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1 rounded-full text-[10px]">Ativo</span></td>
-                                    <td class="p-4 text-right space-x-2">
-                                        <button class="text-slate-400 hover:text-indigo-600"><i class="fa-solid fa-pen"></i></button>
-                                        <button class="text-slate-400 hover:text-red-600" onclick="deleteRow(this)"><i class="fa-solid fa-trash"></i></button>
-                                    </td>
-                                </tr>
-                                <tr class="aluno-row">
-                                    <td class="p-4 font-mono text-slate-500 font-bold">2026-0102</td>
-                                    <td class="p-4 font-semibold text-slate-800">Lucas Santos Oliveira</td>
-                                    <td class="p-4 text-slate-600">1º Ano B - Médio</td>
-                                    <td class="p-4 text-slate-600">Mariana Santos (Mãe)</td>
-                                    <td class="p-4"><span class="bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1 rounded-full text-[10px]">Ativo</span></td>
-                                    <td class="p-4 text-right space-x-2">
-                                        <button class="text-slate-400 hover:text-indigo-600"><i class="fa-solid fa-pen"></i></button>
-                                        <button class="text-slate-400 hover:text-red-600" onclick="deleteRow(this)"><i class="fa-solid fa-trash"></i></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <section id="tab-notas" class="tab-content hidden">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                        <h3 class="font-bold text-slate-800 mb-2">Lançamento de Notas e Frequência</h3>
+                        <p class="text-xs text-slate-400">Gestão de desempenho do Colégio Estadual Jardim Oriente.</p>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- Corpo Docente -->
-            <section id="tab-professores" class="tab-content hidden">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">PR</div>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-sm">Prof. Ricardo Alves</h4>
-                            <p class="text-xs text-slate-400">Matemática & Física</p>
-                            <span class="inline-block mt-2 text-[10px] bg-slate-100 text-slate-600 font-semibold px-2 py-0.5 rounded">32h / semana</span>
-                        </div>
+                <section id="tab-turmas" class="tab-content hidden">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                        <h3 class="font-bold text-slate-800 mb-2">Grade de Turmas</h3>
+                        <p class="text-xs text-slate-400">Horários de aulas do CEJO.</p>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">PC</div>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-sm">Profa. Camila Lima</h4>
-                            <p class="text-xs text-slate-400">Língua Portuguesa & Literatura</p>
-                            <span class="inline-block mt-2 text-[10px] bg-slate-100 text-slate-600 font-semibold px-2 py-0.5 rounded">40h / semana</span>
-                        </div>
+                </section>
+
+                <section id="tab-comunicados" class="tab-content hidden">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                        <h3 class="font-bold text-slate-800 mb-2">Mural Oficial do CEJO</h3>
+                        <p class="text-xs text-slate-400">Informativos da comunidade escolar em Valparaíso de Goiás.</p>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
+        </main>
+    </div>
 
-            <!-- Notas & Frequência -->
-            <section id="tab-notas" class="tab-content hidden">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800">Lançamento de Diário de Classe</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <select class="border border-slate-200 text-xs rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
-                            <option>Selecione a Turma...</option>
-                            <option>3º Ano A - Ensino Médio</option>
-                            <option>1º Ano B - Ensino Médio</option>
-                        </select>
-                        <select class="border border-slate-200 text-xs rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
-                            <option>Selecione a Disciplina...</option>
-                            <option>Matemática</option>
-                            <option>História</option>
-                        </select>
-                        <select class="border border-slate-200 text-xs rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
-                            <option>1º Trimestre</option>
-                            <option>2º Trimestre</option>
-                        </select>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Turmas & Grade -->
-            <section id="tab-turmas" class="tab-content hidden">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                    <h3 class="font-bold text-slate-800 mb-2">Estrutura de Turmas & Salas</h3>
-                    <p class="text-xs text-slate-400">Mapeamento de horários e distribuição de salas presenciais.</p>
-                </div>
-            </section>
-
-            <!-- Financeiro -->
-            <section id="tab-financeiro" class="tab-content hidden">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800">Controle Financeiro de Mensalidades</h3>
-                    <p class="text-xs text-slate-400">Emissão de boletos, histórico de pagamentos e controle de inadimplência.</p>
-                </div>
-            </section>
-
-            <!-- Mural & Comunicados -->
-            <section id="tab-comunicados" class="tab-content hidden">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800">Envio de Comunicados aos Pais</h3>
-                    <p class="text-xs text-slate-400">Envio de circulares, recados e avisos urgentes via Portal da Família.</p>
-                </div>
-            </section>
-
-        </div>
-    </main>
-
-    <!-- Modal: Novo Aluno -->
-    <div id="modal-aluno" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
+    <!-- Modal Novo Aluno -->
+    <div id="modal-aluno" class="fixed inset-0 w-full h-full bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4 mx-auto">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="font-bold text-slate-800 text-base">Cadastrar Novo Aluno</h3>
+                <h3 class="font-bold text-slate-800 text-base">Cadastrar Novo Aluno no CEJO</h3>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="form-aluno" onsubmit="addAluno(event)" class="space-y-3">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Nome Completo</label>
-                    <input type="text" id="input-nome" required class="w-full border border-slate-200 text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <input type="text" id="input-nome" required class="w-full border border-slate-200 text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Turma</label>
-                    <select id="input-turma" class="w-full border border-slate-200 text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
-                        <option>3º Ano A - Médio</option>
-                        <option>1º Ano B - Médio</option>
+                    <select id="input-turma" class="w-full border border-slate-200 text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <option>3º Ano A - Ensino Médio</option>
+                        <option>1º Ano B - Ensino Médio</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Nome do Responsável</label>
-                    <input type="text" id="input-resp" required class="w-full border border-slate-200 text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <input type="text" id="input-resp" required class="w-full border border-slate-200 text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
                 <div class="pt-2 flex justify-end gap-2">
                     <button type="button" onclick="closeModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm">Salvar Aluno</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-sm">Salvar Registro</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Script Principal JS -->
     <script>
         const titles = {
             'dashboard': 'Dashboard Geral',
-            'alunos': 'Gestão de Alunos & Matrículas',
+            'alunos': 'Alunos & Matrículas',
             'professores': 'Corpo Docente',
             'notas': 'Lançamento de Notas & Frequência',
-            'turmas': 'Turmas & Grade Horária',
-            'financeiro': 'Módulo Financeiro',
-            'comunicados': 'Mural de Comunicados'
+            'turmas': 'Turmas & Horários',
+            'comunicados': 'Mural & Avisos do CEJO'
         };
 
+        function openLoginModal() {
+            document.getElementById('modal-login').classList.remove('hidden');
+            document.getElementById('modal-login').classList.add('flex');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('modal-login').classList.add('hidden');
+            document.getElementById('modal-login').classList.remove('flex');
+        }
+
+        function entrarNoSistema(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const matricula = document.getElementById('login-matricula').value;
+
+            if (email && matricula) {
+                const initial = email.charAt(0).toUpperCase();
+
+                // Atualiza perfil no canto inferior esquerdo (Sidebar)
+                document.getElementById('user-email-display').innerText = email;
+                document.getElementById('user-matricula-display').innerText = 'Mat. ' + matricula;
+                document.getElementById('user-sidebar-avatar').innerText = initial;
+
+                // Atualiza perfil no canto superior direito (Header)
+                document.getElementById('top-user-email').innerText = email;
+                document.getElementById('top-user-matricula').innerText = 'Mat. ' + matricula;
+                document.getElementById('top-user-avatar').innerText = initial;
+
+                closeLoginModal();
+                document.getElementById('screen-landing').classList.add('hidden');
+                document.getElementById('screen-app').classList.remove('hidden');
+                document.getElementById('screen-app').classList.add('flex');
+
+                switchTab('dashboard');
+            }
+        }
+
+        function sairDoSistema() {
+            document.getElementById('screen-app').classList.add('hidden');
+            document.getElementById('screen-app').classList.remove('flex');
+            document.getElementById('screen-landing').classList.remove('hidden');
+        }
+
         function switchTab(tabId) {
-            // Ocultar todas as abas
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-            
-            // Estilizar botões inativos
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+                btn.classList.remove('bg-emerald-600', 'text-white', 'shadow-md');
                 btn.classList.add('text-slate-300', 'hover:bg-slate-800', 'hover:text-white');
             });
 
-            // Ativar a aba selecionada
             const targetTab = document.getElementById('tab-' + tabId);
             if (targetTab) targetTab.classList.remove('hidden');
 
-            // Ativar estilo do botão clicado
             const activeBtn = document.getElementById('btn-' + tabId);
             if (activeBtn) {
-                activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+                activeBtn.classList.add('bg-emerald-600', 'text-white', 'shadow-md');
                 activeBtn.classList.remove('text-slate-300', 'hover:bg-slate-800');
             }
 
-            // Atualizar título da página
             document.getElementById('page-title').innerText = titles[tabId] || 'Gestão Escolar';
+        }
+
+        function toggleDarkMode() {
+            const body = document.body;
+            const icons = document.querySelectorAll('#theme-icon, .theme-icon-landing');
+            body.classList.toggle('dark-mode');
+
+            const isDark = body.classList.contains('dark-mode');
+            icons.forEach(icon => {
+                if (isDark) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun', 'text-amber-400');
+                } else {
+                    icon.classList.remove('fa-sun', 'text-amber-400');
+                    icon.classList.add('fa-moon');
+                }
+            });
         }
 
         function searchAlunos(query) {
@@ -393,7 +704,7 @@
             const nome = document.getElementById('input-nome').value;
             const turma = document.getElementById('input-turma').value;
             const resp = document.getElementById('input-resp').value;
-            const mat = '2026-' + Math.floor(1000 + Math.random() * 9000);
+            const mat = '2026-CEJO-' + Math.floor(10 + Math.random() * 90);
 
             const tbody = document.getElementById('aluno-table-body');
             const newRow = document.createElement('tr');
@@ -405,7 +716,7 @@
                 <td class="p-4 text-slate-600">${resp}</td>
                 <td class="p-4"><span class="bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1 rounded-full text-[10px]">Ativo</span></td>
                 <td class="p-4 text-right space-x-2">
-                    <button class="text-slate-400 hover:text-indigo-600"><i class="fa-solid fa-pen"></i></button>
+                    <button class="text-slate-400 hover:text-emerald-600"><i class="fa-solid fa-pen"></i></button>
                     <button class="text-slate-400 hover:text-red-600" onclick="deleteRow(this)"><i class="fa-solid fa-trash"></i></button>
                 </td>
             `;
@@ -420,9 +731,6 @@
                 btn.closest('tr').remove();
             }
         }
-
-        // Inicializar na aba Dashboard
-        document.addEventListener('DOMContentLoaded', () => switchTab('dashboard'));
     </script>
 </body>
 </html>
